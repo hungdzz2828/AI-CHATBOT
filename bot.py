@@ -3,22 +3,17 @@ import os
 import asyncio
 from google import genai
 
-# ===== ENV =====
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# ===== GEMINI CLIENT =====
 client_ai = genai.Client(api_key=GEMINI_API_KEY)
 
-# ===== DISCORD =====
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = discord.Client(intents=intents)
 
-# ===== AI FUNCTION (RUN IN THREAD) =====
-async def ask_ai(prompt):
 
+async def ask_ai(prompt):
     loop = asyncio.get_running_loop()
 
     response = await loop.run_in_executor(
@@ -31,15 +26,14 @@ async def ask_ai(prompt):
 
     if response.text:
         return response.text
-    else:
-        return "⚠ AI không trả lời."
+    return "AI không trả lời."
 
-# ===== READY =====
+
 @bot.event
 async def on_ready():
     print(f"Bot online: {bot.user}")
 
-# ===== MESSAGE =====
+
 @bot.event
 async def on_message(message):
 
@@ -61,5 +55,5 @@ async def on_message(message):
         print("AI ERROR:", e)
         await message.channel.send("⚠ AI lỗi.")
 
-# ===== RUN =====
+
 bot.run(DISCORD_TOKEN)
