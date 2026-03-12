@@ -1,13 +1,11 @@
 import discord
 import os
-import google.generativeai as genai
+from google import genai
 
 TOKEN = os.getenv("TOKEN")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
-genai.configure(api_key=GEMINI_KEY)
-
-model = genai.GenerativeModel("gemini-1.5-flash-latest")
+client_ai = genai.Client(api_key=GEMINI_KEY)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -29,10 +27,15 @@ async def on_message(message):
         question = message.content[3:].strip()
 
         try:
-            response = model.generate_content(question)
+            response = client_ai.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=question
+            )
+
             await message.channel.send(response.text)
 
         except Exception as e:
+            print(e)
             await message.channel.send("AI đang lỗi.")
 
 bot.run(TOKEN)
