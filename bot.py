@@ -16,9 +16,10 @@ intents.message_content = True
 
 bot = discord.Client(intents=intents)
 
-# ===== AI FUNCTION (ANTI BLOCK LOOP) =====
+# ===== AI FUNCTION (RUN IN THREAD) =====
 async def ask_ai(prompt):
-    loop = asyncio.get_event_loop()
+
+    loop = asyncio.get_running_loop()
 
     response = await loop.run_in_executor(
         None,
@@ -33,12 +34,12 @@ async def ask_ai(prompt):
     else:
         return "⚠ AI không trả lời."
 
-# ===== BOT READY =====
+# ===== READY =====
 @bot.event
 async def on_ready():
     print(f"Bot online: {bot.user}")
 
-# ===== MESSAGE EVENT =====
+# ===== MESSAGE =====
 @bot.event
 async def on_message(message):
 
@@ -51,13 +52,14 @@ async def on_message(message):
             reply = await ask_ai(message.content)
 
             # Discord giới hạn 4000 ký tự
-            reply = reply[:3900]
+            if len(reply) > 3900:
+                reply = reply[:3900]
 
             await message.channel.send(reply)
 
     except Exception as e:
         print("AI ERROR:", e)
-        await message.channel.send("⚠ AI lỗi, thử lại sau.")
+        await message.channel.send("⚠ AI lỗi.")
 
 # ===== RUN =====
 bot.run(DISCORD_TOKEN)
