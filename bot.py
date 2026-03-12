@@ -1,7 +1,7 @@
 import discord
 from google import genai
 
-DISCORD_TOKEN = "DISCORD_TOKEN"
+DISCORD_TOKEN = "MTQ4MTUzNDI2Mzg3NzY5NzU2Ng.GWpibj.zGnFReld5Y5NAo_I-3AnOZfAz3FcU47H2JWT6Y"
 GEMINI_API_KEY = "API_KEY"
 
 ai = genai.Client(api_key=GEMINI_API_KEY)
