@@ -7,7 +7,7 @@ GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_KEY)
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-1.5-flash-latest")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -20,6 +20,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+
     if message.author == bot.user:
         return
 
@@ -27,15 +28,11 @@ async def on_message(message):
 
         question = message.content[3:].strip()
 
-        if question == "":
-            await message.channel.send("Bạn phải hỏi gì đó sau !ai")
-            return
-
         try:
             response = model.generate_content(question)
             await message.channel.send(response.text)
 
         except Exception as e:
-            await message.channel.send("AI đang lỗi tạm thời.")
+            await message.channel.send("AI đang lỗi.")
 
 bot.run(TOKEN)
