@@ -1,9 +1,10 @@
 import discord
+import os
 from google import genai
 
-# ===== TOKEN =====
-DISCORD_TOKEN = "MTQ4MTUzNDI2Mzg3NzY5NzU2Ng.GdyqkT.7QVXEXOKXEK7vfxSGn2nyzIXWcmmjcCMGri_pM"
-GEMINI_API_KEY = "AIzaSyDLqVnTQskYV-tsC07CMuVWPgfqYh6IT0E"
+# ===== ENV VARIABLES =====
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # ===== AI CLIENT =====
 client_ai = genai.Client(api_key=GEMINI_API_KEY)
@@ -23,7 +24,6 @@ async def on_ready():
 @bot.event
 async def on_message(message):
 
-    # bỏ qua tin nhắn của bot
     if message.author == bot.user:
         return
 
@@ -38,8 +38,8 @@ async def on_message(message):
         await message.channel.send(response.text)
 
     except Exception as e:
-        await message.channel.send("⚠ Lỗi AI")
         print(e)
+        await message.channel.send("⚠ AI lỗi")
 
 
 bot.run(DISCORD_TOKEN)
