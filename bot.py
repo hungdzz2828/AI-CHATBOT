@@ -1,41 +1,45 @@
 import discord
-import os
 from google import genai
 
-TOKEN = os.getenv("TOKEN")
-GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+# ===== TOKEN =====
+DISCORD_TOKEN = "DISCORD_TOKEN_CUA_BAN"
+GEMINI_API_KEY = "API_KEY_CUA_BAN"
 
-ai = genai.Client(api_key=GEMINI_KEY)
+# ===== AI CLIENT =====
+client_ai = genai.Client(api_key=GEMINI_API_KEY)
 
+# ===== DISCORD =====
 intents = discord.Intents.default()
 intents.message_content = True
 
 bot = discord.Client(intents=intents)
 
+
 @bot.event
 async def on_ready():
     print(f"Bot online: {bot.user}")
 
+
 @bot.event
 async def on_message(message):
 
+    # bỏ qua tin nhắn của bot
     if message.author == bot.user:
         return
 
-    if message.content.startswith("!ai"):
+    question = message.content
 
-        question = message.content[3:].strip()
+    try:
+        response = client_ai.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=question
+        )
 
-        try:
-            response = ai.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=question
-            )
+        await message.channel.send(response.text)
 
-            await message.channel.send(response.text)
+    except Exception as e:
+        await message.channel.send("⚠ Lỗi AI")
+        print(e)
 
-        except Exception as e:
-            print(e)
-            await message.channel.send("AI lỗi.")
 
-bot.run(TOKEN)
+bot.run(DISCORD_TOKEN)
