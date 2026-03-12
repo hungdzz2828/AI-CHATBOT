@@ -28,7 +28,7 @@ async def on_message(message):
 
         try:
             response = ai.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-2.5-flash",
                 contents=question
             )
 
